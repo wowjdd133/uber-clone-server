@@ -5,6 +5,7 @@ import * as session from 'express-session';
 import Redis from 'ioredis';
 import * as passport from 'passport';
 import { RedisStore } from 'connect-redis';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,11 +13,22 @@ async function bootstrap() {
 
   const redisClient = new Redis();
   // redisClient.connect().catch(console.error);
-
   const redisStore = new RedisStore({
     client: redisClient,
     prefix: 'myapp:',
   });
+
+  //swagger 설정
+  const config = new DocumentBuilder()
+    .setTitle('NestJS API')
+    .addCookieAuth('connect.sid')
+    .setDescription('NestJS API Description')
+    .setVersion('1.0')
+    .addTag('nestjs')
+    .build();
+
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
 
   app.use(
     session({
@@ -26,7 +38,7 @@ async function bootstrap() {
       store: redisStore,
       cookie: {
         httpOnly: true,
-        secure: true,
+        // secure: true,
         maxAge: 1000 * 60 * 30, // 30분 유지,
       },
     }),
