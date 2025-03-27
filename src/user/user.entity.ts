@@ -1,22 +1,30 @@
-import { hash } from 'crypto';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column()
+  @IsEmail()
+  @ApiProperty()
   email: string;
 
   @Column({ select: false })
+  @IsNotEmpty()
+  @ApiProperty()
   password: string;
+
+  @Column()
+  @IsString()
+  @ApiProperty()
+  name: string;
 
   @Column({ default: true })
   isActive: boolean;
 
-  @BeforeInsert()
-  hashPassword() {
-    this.password = hash(this.password, 'sha256');
-  }
+  @Column()
+  salt: string;
 }
