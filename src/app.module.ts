@@ -31,6 +31,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: process.env.MYSQL_PASSWORD,
       database: 'test',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+      synchronize: true, // Set to false in production
+      logging: true, // Enable logging for debugging
+      autoLoadEntities: true, // Automatically load entities
+      migrationsRun: false, // Automatically run migrations on startup
+      ssl: false, // Set to true if using SSL
     }),
   ],
   controllers: [AppController],

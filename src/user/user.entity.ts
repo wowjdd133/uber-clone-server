@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   @IsEmail()
@@ -25,6 +25,7 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
+  //bcrypt 사용해서 salt 필요없어짐.. 다음에 쓰는걸로 또 만들어보자
   @Column()
   salt: string;
 }

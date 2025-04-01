@@ -7,9 +7,11 @@ import * as passport from 'passport';
 import { RedisStore } from 'connect-redis';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common/pipes';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalFilters(new HttpExceptionFilter());
   const configService = app.get(ConfigService);
 
   const redisClient = new Redis();

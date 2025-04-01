@@ -11,18 +11,23 @@ import {
   Get,
   Body,
 } from '@nestjs/common';
-import { AuthGuard } from './auth.guard';
+// import { AuthGuard } from './auth.guard';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RegisterDto } from './dto/registerDto';
+import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './auth.guard';
+import { LoginDto } from './dto/loginDto';
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
+  constructor(private readonly authService: AuthService) {}
   // session id
-  // @UseGuards(AuthGuard)
+  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Session() session: Record<string, any>) {
-    console.log(session.id);
+  async login(@Body() body: LoginDto, @Session() session: Record<string, any>) {
+    // console.log(body);
+    console.log('session', session.id);
     return { sessionId: session.id };
   }
 
@@ -36,12 +41,15 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() registerDto: RegisterDto) {
-    console.log(registerDto);
-    return true;
+    await this.authService.register(registerDto);
+
+    return {
+      message: '회원가입 성공',
+    };
   }
 
-  @ApiCookieAuth()
-  @UseGuards(AuthGuard)
+  // @ApiCookieAuth()
+  @UseGuards(LocalAuthGuard)
   @Get('hi')
   async hi() {
     return 'hi';
