@@ -11,7 +11,7 @@ import { HttpExceptionFilter } from './http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new HttpExceptionFilter());
+
   const configService = app.get(ConfigService);
 
   const redisClient = new Redis();
@@ -33,6 +33,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
+  app.useGlobalFilters(new HttpExceptionFilter());
   //validation pipe 설정
   app.useGlobalPipes(
     new ValidationPipe({

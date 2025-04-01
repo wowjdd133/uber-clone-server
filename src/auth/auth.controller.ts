@@ -26,8 +26,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() body: LoginDto, @Session() session: Record<string, any>) {
-    // console.log(body);
-    console.log('session', session.id);
     return { sessionId: session.id };
   }
 
