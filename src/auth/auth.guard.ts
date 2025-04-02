@@ -1,3 +1,4 @@
+import { AuthService } from './auth.service';
 import {
   Injectable,
   CanActivate,
@@ -13,11 +14,12 @@ import { validate } from 'class-validator';
 
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
+  constructor(private readonly authService: AuthService) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
-    return req.isAuthenticated();
+    return this.authService.authenticate(req.sessionID);
   }
 }
 
